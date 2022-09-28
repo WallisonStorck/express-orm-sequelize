@@ -71,7 +71,16 @@ class PeopleController {
     }
   }
 
-  static async getOneEnrollment(req, res) {
+  static async getAllEnrollments(req, res) {
+    try {
+      const allEnrollments = await database.Enrollments.findAll();
+      return res.status(200).json(allEnrollments);
+    } catch (error) {
+      return res.status(500).json(error.message);
+    }
+  }
+
+  static async getEnrollmentByPerson(req, res) {
     const { studentId, enrollmentId } = req.params;
     try {
       const enrollment = await database.Enrollments.findOne({
@@ -81,6 +90,79 @@ class PeopleController {
         },
       });
       return res.status(200).json(enrollment);
+    } catch (error) {
+      return res.status(500).json(error.message);
+    }
+  }
+
+  static async getAllEnrollmentsByPerson(req, res) {
+    const { studentId } = req.params;
+
+    try {
+      const enrollmentsOfPerson = await database.Enrollments.findAll({
+        where: { student_id: Number(studentId) },
+      });
+      return res.status(200).json(enrollmentsOfPerson);
+    } catch (error) {
+      return res.status(500).json(error.message);
+    }
+  }
+
+  static async createEnrollPerson(req, res) {
+    const { studentId } = req.params;
+    const enrollInfo = req.body;
+
+    try {
+      const newEnroll = { ...enrollInfo, student_id: Number(studentId) };
+      const enroll = await database.Enrollments.create(newEnroll);
+      return res.status(200).json(enroll);
+    } catch (error) {
+      return res.status(500).json(error.message);
+    }
+  }
+
+  static async updateEnroll(req, res) {
+    const { studentId, enrollmentId } = req.params;
+    const newInfo = req.body;
+
+    try {
+      await database.Enrollments.update(newInfo, {
+        where: { id: Number(enrollmentId), student_id: Number(studentId) },
+      });
+      const enrollUpdated = await database.Enrollments.findOne({
+        where: { id: Number(enrollmentId), student_id: Number(studentId) },
+      });
+      res.status(200).json(enrollUpdated);
+    } catch (error) {
+      return res.status(500).json(error.message);
+    }
+  }
+
+  static async deleteEnroll(req, res) {
+    const { studentId, enrollmentId } = req.params;
+
+    try {
+      const enrollmentExists = await database.Enrollments.findOne({
+        where: {
+          id: Number(enrollmentId),
+          student_id: Number(studentId),
+        },
+      });
+
+      if (!enrollmentExists) throw new Error(`Essa matricula não existe!`);
+
+      const rowDeleted = await database.Enrollments.destroy({
+        where: {
+          id: Number(enrollmentId),
+          student_id: Number(studentId),
+        },
+      });
+
+      if (!rowDeleted) throw new Error(`Erro inesperado!`);
+
+      return res
+        .status(200)
+        .json(`A matricula ID:${enrollmentId} foi excluída com sucesso!`);
     } catch (error) {
       return res.status(500).json(error.message);
     }

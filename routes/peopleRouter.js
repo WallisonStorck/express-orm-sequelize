@@ -9,9 +9,24 @@ router.post("/people", PeopleController.insertPerson);
 router.put("/people/:id", PeopleController.updatePerson);
 router.delete("/people/:id", PeopleController.deletePerson);
 
+router.get("/enrollments/", PeopleController.getAllEnrollments); // <<<< MOVER PARA CONTROLLER ENROLLMENTS
+
 router.get(
   "/people/:studentId/enrollment/:enrollmentId",
-  PeopleController.getOneEnrollment
+  PeopleController.getEnrollmentByPerson
+);
+router.get(
+  "/people/:studentId/enrollments",
+  PeopleController.getAllEnrollmentsByPerson
+);
+router.post("/people/:studentId/enroll", PeopleController.createEnrollPerson);
+router.put(
+  "/people/:studentId/updateEnroll/:enrollmentId",
+  PeopleController.updateEnroll
+);
+router.delete(
+  "/people/:studentId/delete/:enrollmentId",
+  PeopleController.deleteEnroll
 );
 
 module.exports = router;
