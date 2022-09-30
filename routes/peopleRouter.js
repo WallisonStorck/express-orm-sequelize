@@ -8,6 +8,7 @@ router.get("/people/:id", PeopleController.findPerson);
 router.post("/people", PeopleController.insertPerson);
 router.put("/people/:id", PeopleController.updatePerson);
 router.delete("/people/:id", PeopleController.deletePerson);
+router.post("/people/:id/restore/", PeopleController.restorePerson);
 
 router.get("/enrollments/", PeopleController.getAllEnrollments); // <<<< MOVER PARA CONTROLLER ENROLLMENTS
 

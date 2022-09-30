@@ -71,6 +71,38 @@ class PeopleController {
     }
   }
 
+  static async restorePerson(req, res) {
+    const { id } = req.params;
+    try {
+      await database.People.restore({ where: { id: Number(id) } });
+
+      const personExists = await database.People.findOne({
+        where: { id: Number(id) },
+      });
+
+      if (!personExists) throw new Error(`Registro ID:${id} não encontrado!`);
+
+      return res
+        .status(200)
+        .json({ message: `O id:${id} foi restaurado com sucesso!` });
+    } catch (error) {
+      return res.status(500).json(error.message);
+    }
+  }
+
+  static async createEnrollPerson(req, res) {
+    const { studentId } = req.params;
+    const enrollInfo = req.body;
+
+    try {
+      const newEnroll = { ...enrollInfo, student_id: Number(studentId) };
+      const enroll = await database.Enrollments.create(newEnroll);
+      return res.status(200).json(enroll);
+    } catch (error) {
+      return res.status(500).json(error.message);
+    }
+  }
+
   static async getAllEnrollments(req, res) {
     try {
       const allEnrollments = await database.Enrollments.findAll();
@@ -103,19 +135,6 @@ class PeopleController {
         where: { student_id: Number(studentId) },
       });
       return res.status(200).json(enrollmentsOfPerson);
-    } catch (error) {
-      return res.status(500).json(error.message);
-    }
-  }
-
-  static async createEnrollPerson(req, res) {
-    const { studentId } = req.params;
-    const enrollInfo = req.body;
-
-    try {
-      const newEnroll = { ...enrollInfo, student_id: Number(studentId) };
-      const enroll = await database.Enrollments.create(newEnroll);
-      return res.status(200).json(enroll);
     } catch (error) {
       return res.status(500).json(error.message);
     }
