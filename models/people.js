@@ -26,7 +26,14 @@ module.exports = (sequelize, DataTypes) => {
     {
       sequelize,
       modelName: "People",
-      paranoid: true,
+      paranoid: true, //Soft Delete, marca o registro como apagado
+      defaultScope: {
+        where: { enable: true }, //Mostra somente os registros ativos
+      },
+      scopes: {
+        all: { where: {} },
+        // etc: {constraint: valor}
+      },
     }
   );
   return People;
