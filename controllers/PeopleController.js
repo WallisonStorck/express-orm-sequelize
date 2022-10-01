@@ -62,19 +62,22 @@ class PeopleController {
     try {
       const { id } = req.params;
 
-      const personExists = await database.People.findOne({
+      const personExists = await database.People.scope("all").findOne({
         where: { id: Number(id) },
       });
 
-      if (!personExists) throw new Error(`Pessoa ID:${id} não encontrada!`);
+      if (!personExists)
+        throw new Error(`(WARNING) Pessoa ID:${id} não encontrada!`);
 
-      const rowDeleted = await database.People.destroy({
+      const rowDeleted = await database.People.scope("all").destroy({
         where: { id: Number(id) },
       });
 
       if (!rowDeleted) throw new Error("Erro inesperado!");
 
-      return res.status(200).json(`Pessoa ID:${id} excluída com sucesso!`);
+      return res
+        .status(200)
+        .json(`(INFO) Pessoa ID:${id} excluída com sucesso!`);
     } catch (error) {
       return res.status(500).json(error.message);
     }
@@ -83,17 +86,18 @@ class PeopleController {
   static async restorePerson(req, res) {
     const { id } = req.params;
     try {
+      // const personExists = await database.People.scope("all").findOne({
+      //   where: { id: Number(id) },
+      // });
+
+      // if (!personExists)
+      //   throw new Error(`(WARNING) Registro ID:${id} não encontrado!`);
+
       await database.People.restore({ where: { id: Number(id) } });
-
-      const personExists = await database.People.findOne({
-        where: { id: Number(id) },
-      });
-
-      if (!personExists) throw new Error(`Registro ID:${id} não encontrado!`);
 
       return res
         .status(200)
-        .json({ message: `O id:${id} foi restaurado com sucesso!` });
+        .json({ message: `(INFO) O id:${id} foi restaurado com sucesso!` });
     } catch (error) {
       return res.status(500).json(error.message);
     }

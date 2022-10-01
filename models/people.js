@@ -18,9 +18,25 @@ module.exports = (sequelize, DataTypes) => {
   }
   People.init(
     {
-      name: DataTypes.STRING,
+      name: {
+        type: DataTypes.STRING,
+        validate: {
+          len: {
+            args: [2, 45],
+            msg: "O nome deve conter entre 2 e 45 caracteres!",
+          },
+        },
+      },
       enable: DataTypes.BOOLEAN,
-      email: DataTypes.STRING,
+      email: {
+        type: DataTypes.STRING,
+        validate: {
+          isEmail: {
+            args: true,
+            msg: "Dado tipo e-mail inválido!",
+          },
+        },
+      },
       role: DataTypes.STRING,
     },
     {

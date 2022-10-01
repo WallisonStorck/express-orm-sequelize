@@ -5,14 +5,13 @@ const router = Router();
 
 router.get("/people", PeopleController.getActivePeople);
 router.get("/people/all", PeopleController.getAllPeople);
-router.get("/people/:id", PeopleController.findPerson);
-router.post("/people", PeopleController.insertPerson);
-router.put("/people/:id", PeopleController.updatePerson);
-router.delete("/people/:id", PeopleController.deletePerson);
-router.post("/people/:id/restore/", PeopleController.restorePerson);
+router.get("/person/:id", PeopleController.findPerson);
+router.post("/person", PeopleController.insertPerson);
+router.put("/person/:id", PeopleController.updatePerson);
+router.delete("/person/:id", PeopleController.deletePerson);
+router.post("/person/:id/restore/", PeopleController.restorePerson);
 
 router.get("/enrollments/", PeopleController.getAllEnrollments); // <<<< MOVER PARA CONTROLLER ENROLLMENTS
-
 router.get(
   "/people/:studentId/enrollment/:enrollmentId",
   PeopleController.getEnrollmentByPerson
